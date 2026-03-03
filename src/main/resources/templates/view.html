@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${post.title}">Article</title>
+</head>
+<body>
+<h1 th:text="${post.title}">Titre</h1>
+<p th:text="${post.content}">Contenu</p>
+
+<!-- Vérification null pour l'auteur -->
+<p th:if="${post.author != null}">
+    Auteur : <span th:text="${post.author.username}">Auteur</span>
+</p>
+<p th:if="${post.author == null}">
+    Auteur : Inconnu
+</p>
+
+<a th:href="@{/posts/{id}/edit(id=${post.id})}">Modifier</a>
+
+<form th:action="@{/posts/{id}/delete(id=${post.id})}" method="post">
+    <button type="submit">Supprimer</button>
+</form>
+
+<a href="/posts">Retour à la liste</a>
+</body>
+</html>
