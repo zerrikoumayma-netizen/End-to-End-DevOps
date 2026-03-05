@@ -1,31 +1,61 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8"/>
     <title>Connexion</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #F7F5F2; --surface: #FFFFFF;
+            --text-primary: #1A1A18; --text-secondary: #6B6B65;
+            --accent: #2D6A4F; --accent-light: #E8F4EF;
+            --border: #E2E0DB; --radius: 12px;
+        }
+        body { font-family: 'DM Sans', sans-serif; background: var(--bg); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+        .card { background: var(--surface); border-radius: 20px; padding: 3rem; width: 100%; max-width: 420px; box-shadow: 0 4px 40px rgba(0,0,0,0.08); }
+        .logo { font-family: 'DM Serif Display', serif; font-size: 1.5rem; color: var(--accent); margin-bottom: 2rem; display: block; }
+        .card h1 { font-family: 'DM Serif Display', serif; font-size: 2rem; color: var(--text-primary); margin-bottom: 0.3rem; }
+        .card .subtitle { color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 2rem; }
+        .form-group { margin-bottom: 1.2rem; }
+        label { display: block; font-size: 0.82rem; font-weight: 500; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.45rem; }
+        input[type="text"], input[type="password"] { width: 100%; padding: 0.78rem 1rem; border: 1.5px solid var(--border); border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 0.95rem; color: var(--text-primary); background: #FAFAF8; transition: border-color 0.2s, box-shadow 0.2s; outline: none; }
+        input:focus { border-color: var(--accent); background: #fff; box-shadow: 0 0 0 3px var(--accent-light); }
+        .btn-submit { width: 100%; padding: 0.85rem; background: var(--accent); color: #fff; border: none; border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 600; cursor: pointer; margin-top: 0.5rem; transition: background 0.2s, transform 0.1s; }
+        .btn-submit:hover { background: #235A40; }
+        .btn-submit:active { transform: scale(0.99); }
+        .alert-error { background: #FEF2F2; border: 1px solid #FCA5A5; color: #991B1B; padding: 0.75rem 1rem; border-radius: var(--radius); font-size: 0.87rem; margin-bottom: 1.2rem; }
+        .alert-success { background: var(--accent-light); border: 1px solid #86EFAC; color: #166534; padding: 0.75rem 1rem; border-radius: var(--radius); font-size: 0.87rem; margin-bottom: 1.2rem; }
+        .register-link { margin-top: 1.4rem; text-align: center; font-size: 0.86rem; color: var(--text-secondary); }
+        .register-link a { color: var(--accent); font-weight: 500; text-decoration: none; }
+        .register-link a:hover { text-decoration: underline; }
+        .divider { display: flex; align-items: center; gap: 0.75rem; margin: 1.2rem 0 0.3rem; color: var(--text-secondary); font-size: 0.8rem; }
+        .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    </style>
 </head>
 <body>
-<h1>Connexion</h1>
+<div class="card">
+    <span class="logo">Demo3</span>
+    <h1>Bon retour</h1>
+    <p class="subtitle">Connectez-vous à votre compte</p>
 
-<div th:if="${param.error}">
-    <p style="color:red">Identifiants incorrects !</p>
+    <div class="alert-error" th:if="${param.error}">Identifiants incorrects. Veuillez réessayer.</div>
+    <div class="alert-success" th:if="${param.logout}">Vous avez été déconnecté avec succès.</div>
+
+    <form th:action="@{/login}" method="post">
+        <div class="form-group">
+            <label for="username">Nom d'utilisateur</label>
+            <input type="text" id="username" name="username" placeholder="Votre identifiant" required/>
+        </div>
+        <div class="form-group">
+            <label for="password">Mot de passe</label>
+            <input type="password" id="password" name="password" placeholder="••••••••" required/>
+        </div>
+        <button type="submit" class="btn-submit">Se connecter →</button>
+    </form>
+
+    <div class="divider">ou</div>
+    <p class="register-link">Pas encore de compte ? <a th:href="@{/register}">S'inscrire</a></p>
 </div>
-
-<div th:if="${param.logout}">
-    <p style="color:green">Déconnexion réussie !</p>
-</div>
-
-<form th:action="@{/login}" method="post">
-    <label>Nom d'utilisateur :
-        <input type="text" name="username" />
-    </label>
-    <br/>
-    <label>Mot de passe :
-        <input type="password" name="password" />
-    </label>
-    <br/>
-    <button type="submit">Se connecter</button>
-</form>
-
-<a href="/register">Pas encore de compte ? S'inscrire</a>
 </body>
 </html>

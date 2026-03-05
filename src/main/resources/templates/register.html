@@ -1,25 +1,73 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8"/>
     <title>Inscription</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #F7F5F2; --surface: #FFFFFF;
+            --text-primary: #1A1A18; --text-secondary: #6B6B65;
+            --accent: #2D6A4F; --accent-light: #E8F4EF;
+            --border: #E2E0DB; --radius: 12px;
+        }
+        body { font-family: 'DM Sans', sans-serif; background: var(--bg); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+        .split { display: flex; width: 100%; max-width: 900px; min-height: 560px; background: var(--surface); border-radius: 20px; overflow: hidden; box-shadow: 0 4px 40px rgba(0,0,0,0.08); }
+        .side-panel { width: 40%; background: var(--accent); padding: 3rem 2.5rem; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
+        .side-panel::before { content: ''; position: absolute; width: 300px; height: 300px; border-radius: 50%; background: rgba(255,255,255,0.06); bottom: -80px; right: -80px; }
+        .side-panel::after { content: ''; position: absolute; width: 180px; height: 180px; border-radius: 50%; background: rgba(255,255,255,0.04); top: 40px; right: 30px; }
+        .brand { font-family: 'DM Serif Display', serif; font-size: 1.6rem; color: #fff; }
+        .side-text h2 { font-family: 'DM Serif Display', serif; font-size: 2rem; color: #fff; line-height: 1.25; margin-bottom: 1rem; }
+        .side-text p { color: rgba(255,255,255,0.7); font-size: 0.9rem; line-height: 1.65; }
+        .form-panel { width: 60%; padding: 3rem; display: flex; flex-direction: column; justify-content: center; }
+        .form-header { margin-bottom: 2rem; }
+        .form-header h1 { font-family: 'DM Serif Display', serif; font-size: 1.9rem; color: var(--text-primary); margin-bottom: 0.3rem; }
+        .form-header p { color: var(--text-secondary); font-size: 0.88rem; }
+        .form-group { margin-bottom: 1.2rem; }
+        label { display: block; font-size: 0.82rem; font-weight: 500; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.45rem; }
+        input[type="text"], input[type="email"], input[type="password"] { width: 100%; padding: 0.78rem 1rem; border: 1.5px solid var(--border); border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 0.95rem; color: var(--text-primary); background: #FAFAF8; transition: border-color 0.2s, box-shadow 0.2s; outline: none; }
+        input:focus { border-color: var(--accent); background: #fff; box-shadow: 0 0 0 3px var(--accent-light); }
+        .btn-submit { width: 100%; padding: 0.85rem; background: var(--accent); color: #fff; border: none; border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 600; cursor: pointer; margin-top: 0.5rem; transition: background 0.2s, transform 0.1s; }
+        .btn-submit:hover { background: #235A40; }
+        .btn-submit:active { transform: scale(0.99); }
+        .login-link { margin-top: 1.4rem; text-align: center; font-size: 0.86rem; color: var(--text-secondary); }
+        .login-link a { color: var(--accent); font-weight: 500; text-decoration: none; }
+        .login-link a:hover { text-decoration: underline; }
+        @media (max-width: 640px) { .split { flex-direction: column; } .side-panel { width: 100%; min-height: 140px; padding: 2rem; } .side-text { display: none; } .form-panel { width: 100%; padding: 2rem; } }
+    </style>
 </head>
 <body>
-<h1>Créer un compte</h1>
-
-<form th:action="@{/register}" th:object="${user}" method="post">
-    <label>Nom d'utilisateur :
-        <input type="text" th:field="*{username}" />
-    </label>
-    <br/>
-    <label>Email :
-        <input type="email" th:field="*{email}" />
-    </label>
-    <br/>
-    <label>Mot de passe :
-        <input type="password" th:field="*{password}" />
-    </label>
-    <br/>
-    <button type="submit">S'inscrire</button>
-</form>
+<div class="split">
+    <div class="side-panel">
+        <div class="brand">Demo3</div>
+        <div class="side-text">
+            <h2>Rejoignez notre communauté</h2>
+            <p>Créez votre compte en quelques secondes et accédez à toutes les fonctionnalités.</p>
+        </div>
+    </div>
+    <div class="form-panel">
+        <div class="form-header">
+            <h1>Créer un compte</h1>
+            <p>Remplissez les informations ci-dessous</p>
+        </div>
+        <form th:action="@{/register}" th:object="${user}" method="post">
+            <div class="form-group">
+                <label for="username">Nom d'utilisateur</label>
+                <input type="text" id="username" th:field="*{username}" placeholder="ex: jean_dupont"/>
+            </div>
+            <div class="form-group">
+                <label for="email">Adresse email</label>
+                <input type="email" id="email" th:field="*{email}" placeholder="exemple@email.com"/>
+            </div>
+            <div class="form-group">
+                <label for="password">Mot de passe</label>
+                <input type="password" id="password" th:field="*{password}" placeholder="••••••••"/>
+            </div>
+            <button type="submit" class="btn-submit">S'inscrire →</button>
+        </form>
+        <p class="login-link">Déjà un compte ? <a th:href="@{/login}">Se connecter</a></p>
+    </div>
+</div>
 </body>
 </html>

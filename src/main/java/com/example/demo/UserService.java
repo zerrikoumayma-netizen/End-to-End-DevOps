@@ -5,8 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 @Service
 public class UserService {
 
@@ -20,8 +18,13 @@ public class UserService {
     }
 
     public User createUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword())); // ← encoder
-        user.setRole("ROLE_USER"); // ← rôle par défaut
-        return userRepository.save(user); // ← sauvegarder !
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRole("ROLE_USER");
+        return userRepository.save(user);
+    }
+
+    // AJOUTÉ : nécessaire pour retrouver l'auteur connecté
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 }

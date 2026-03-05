@@ -3,8 +3,8 @@ package com.example.demo;
 import com.example.demo.repositories.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
 import java.util.List;
+
 @Service
 public class PostService {
 
@@ -24,6 +24,11 @@ public class PostService {
     }
 
     public Post createPost(Post post) {
+        return postRepository.save(post);
+    }
+
+    // CORRIGÉ : était vide avant
+    public Post updatePost(Post post) {
         return postRepository.save(post);
     }
 

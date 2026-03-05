@@ -1,26 +1,70 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:text="${post.title}">Article</title>
+    <meta charset="UTF-8"/>
+    <title th:text="${post.title}">Post</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #F7F5F2; --surface: #FFFFFF;
+            --text-primary: #1A1A18; --text-secondary: #6B6B65;
+            --accent: #2D6A4F; --accent-light: #E8F4EF;
+            --border: #E2E0DB; --radius: 12px;
+        }
+        body { font-family: 'DM Sans', sans-serif; background: var(--bg); min-height: 100vh; }
+        nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 60px; position: sticky; top: 0; z-index: 100; }
+        .nav-brand { font-family: 'DM Serif Display', serif; font-size: 1.3rem; color: var(--accent); text-decoration: none; }
+        .nav-actions { display: flex; gap: 0.75rem; align-items: center; }
+        .btn-action { font-size: 0.82rem; font-weight: 500; padding: 0.42rem 0.9rem; border-radius: 8px; text-decoration: none; border: 1.5px solid; transition: background 0.15s, color 0.15s; cursor: pointer; font-family: 'DM Sans', sans-serif; background: transparent; }
+        .btn-edit { color: var(--accent); border-color: var(--accent); }
+        .btn-edit:hover { background: var(--accent-light); }
+        .btn-delete { color: #C0392B; border-color: #FECACA; }
+        .btn-delete:hover { background: #FEF2F2; }
+        .container { max-width: 720px; margin: 0 auto; padding: 3rem 2rem; }
+        .back-link { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--text-secondary); font-size: 0.85rem; text-decoration: none; margin-bottom: 2rem; transition: color 0.15s; }
+        .back-link:hover { color: var(--accent); }
+        .post-card { background: var(--surface); border-radius: 16px; padding: 3rem; box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
+        .post-meta { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1.2rem; }
+        .tag { background: var(--accent-light); color: var(--accent); font-size: 0.75rem; font-weight: 600; padding: 0.25rem 0.65rem; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.05em; }
+        .meta-info { font-size: 0.82rem; color: var(--text-secondary); }
+        .meta-dot { width: 3px; height: 3px; background: var(--border); border-radius: 50%; display: inline-block; margin: 0 0.2rem; vertical-align: middle; }
+        .post-title { font-family: 'DM Serif Display', serif; font-size: 2.2rem; color: var(--text-primary); line-height: 1.2; margin-bottom: 1.8rem; letter-spacing: -0.5px; }
+        .post-divider { height: 1px; background: var(--border); margin-bottom: 1.8rem; }
+        .post-body { font-size: 1rem; color: var(--text-primary); line-height: 1.8; white-space: pre-wrap; }
+        .post-footer { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .btn-back-footer { font-size: 0.85rem; color: var(--text-secondary); text-decoration: none; }
+        .btn-back-footer:hover { color: var(--accent); }
+    </style>
 </head>
 <body>
-<h1 th:text="${post.title}">Titre</h1>
-<p th:text="${post.content}">Contenu</p>
+<nav>
+    <a class="nav-brand" th:href="@{/posts}">Demo3</a>
+    <div class="nav-actions">
+        <a class="btn-action btn-edit" th:href="@{/posts/{id}/edit(id=${post.id})}">Éditer</a>
+        <form th:action="@{/posts/{id}/delete(id=${post.id})}" method="post" style="display:inline">
+            <button type="submit" class="btn-action btn-delete">Supprimer</button>
+        </form>
+    </div>
+</nav>
 
-<!-- Vérification null pour l'auteur -->
-<p th:if="${post.author != null}">
-    Auteur : <span th:text="${post.author.username}">Auteur</span>
-</p>
-<p th:if="${post.author == null}">
-    Auteur : Inconnu
-</p>
+<div class="container">
+    <a class="back-link" th:href="@{/posts}">← Tous les posts</a>
 
-<a th:href="@{/posts/{id}/edit(id=${post.id})}">Modifier</a>
-
-<form th:action="@{/posts/{id}/delete(id=${post.id})}" method="post">
-    <button type="submit">Supprimer</button>
-</form>
-
-<a href="/posts">Retour à la liste</a>
+    <div class="post-card">
+        <div class="post-meta">
+            <span class="tag">Post</span>
+            <!-- CORRIGÉ : post.author.username -->
+            <span class="meta-info" th:text="${post.author != null ? post.author.username : 'Anonyme'}">Auteur</span>
+        </div>
+        <h1 class="post-title" th:text="${post.title}">Titre</h1>
+        <div class="post-divider"></div>
+        <div class="post-body" th:text="${post.content}">Contenu…</div>
+        <div class="post-footer">
+            <a class="btn-back-footer" th:href="@{/posts}">← Retour à la liste</a>
+            <a class="btn-action btn-edit" th:href="@{/posts/{id}/edit(id=${post.id})}">Éditer ce post</a>
+        </div>
+    </div>
+</div>
 </body>
 </html>

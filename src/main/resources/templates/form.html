@@ -1,25 +1,88 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Formulaire Article</title>
+    <meta charset="UTF-8"/>
+    <title>Post</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #F7F5F2; --surface: #FFFFFF;
+            --text-primary: #1A1A18; --text-secondary: #6B6B65;
+            --accent: #2D6A4F; --accent-light: #E8F4EF;
+            --border: #E2E0DB; --radius: 12px;
+        }
+        body { font-family: 'DM Sans', sans-serif; background: var(--bg); min-height: 100vh; }
+        nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 60px; position: sticky; top: 0; z-index: 100; }
+        .nav-brand { font-family: 'DM Serif Display', serif; font-size: 1.3rem; color: var(--accent); text-decoration: none; }
+        .nav-link { color: var(--text-secondary); font-size: 0.88rem; text-decoration: none; padding: 0.4rem 0.8rem; border-radius: 8px; transition: background 0.15s, color 0.15s; }
+        .nav-link:hover { background: var(--accent-light); color: var(--accent); }
+        .container { max-width: 680px; margin: 0 auto; padding: 3rem 2rem; }
+        .page-header { margin-bottom: 2.5rem; }
+        .back-link { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--text-secondary); font-size: 0.85rem; text-decoration: none; margin-bottom: 1.2rem; transition: color 0.15s; }
+        .back-link:hover { color: var(--accent); }
+        .page-header h1 { font-family: 'DM Serif Display', serif; font-size: 2rem; color: var(--text-primary); }
+        .form-card { background: var(--surface); border-radius: 16px; padding: 2.5rem; box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
+        .form-group { margin-bottom: 1.5rem; }
+        label { display: block; font-size: 0.82rem; font-weight: 500; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.45rem; }
+        input[type="text"] { width: 100%; padding: 0.78rem 1rem; border: 1.5px solid var(--border); border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 0.95rem; color: var(--text-primary); background: #FAFAF8; transition: border-color 0.2s, box-shadow 0.2s; outline: none; }
+        textarea { width: 100%; padding: 0.78rem 1rem; border: 1.5px solid var(--border); border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 0.95rem; color: var(--text-primary); background: #FAFAF8; resize: vertical; min-height: 180px; line-height: 1.6; transition: border-color 0.2s, box-shadow 0.2s; outline: none; }
+        input:focus, textarea:focus { border-color: var(--accent); background: #fff; box-shadow: 0 0 0 3px var(--accent-light); }
+        .form-footer { display: flex; gap: 1rem; align-items: center; padding-top: 0.5rem; }
+        .btn-submit { flex: 1; padding: 0.85rem; background: var(--accent); color: #fff; border: none; border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s, transform 0.1s; }
+        .btn-submit:hover { background: #235A40; }
+        .btn-submit:active { transform: scale(0.99); }
+        .btn-cancel { padding: 0.85rem 1.5rem; background: transparent; color: var(--text-secondary); border: 1.5px solid var(--border); border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 0.88rem; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; transition: border-color 0.15s, color 0.15s; }
+        .btn-cancel:hover { border-color: var(--text-secondary); color: var(--text-primary); }
+    </style>
 </head>
 <body>
-<h1>Créer / Modifier un article</h1>
+<nav>
+    <a class="nav-brand" th:href="@{/posts}">Demo3</a>
+    <a class="nav-link" th:href="@{/posts}">← Retour</a>
+</nav>
 
-<form th:action="@{/posts}" th:object="${post}" method="post">
+<div class="container">
+    <div class="page-header">
+        <a class="back-link" th:href="@{/posts}">← Tous les posts</a>
+        <h1 th:text="${post.id == null ? 'Nouveau post' : 'Modifier le post'}">Nouveau post</h1>
+    </div>
 
-    <label>Titre :
-        <input type="text" th:field="*{title}" />
-    </label>
-    <br/>
-    <label>Contenu :
-        <textarea th:field="*{content}"></textarea>
-    </label>
-    <br/>
-    <button type="submit">Enregistrer</button>
+    <div class="form-card">
 
-</form>
+        <!-- Formulaire CRÉATION -->
+        <form th:if="${post.id == null}" th:action="@{/posts}" th:object="${post}" method="post">
+            <div class="form-group">
+                <label for="title">Titre</label>
+                <input type="text" id="title" th:field="*{title}" placeholder="Donnez un titre accrocheur…" required/>
+            </div>
+            <div class="form-group">
+                <label for="content">Contenu</label>
+                <textarea id="content" th:field="*{content}" placeholder="Rédigez votre post ici…" required></textarea>
+            </div>
+            <div class="form-footer">
+                <a class="btn-cancel" th:href="@{/posts}">Annuler</a>
+                <button type="submit" class="btn-submit">Publier →</button>
+            </div>
+        </form>
 
-<a href="/posts">Annuler</a>
+        <!-- Formulaire ÉDITION -->
+        <form th:if="${post.id != null}" th:action="@{/posts/{id}/edit(id=${post.id})}" th:object="${post}" method="post">
+            <div class="form-group">
+                <label for="title-edit">Titre</label>
+                <input type="text" id="title-edit" th:field="*{title}" placeholder="Donnez un titre accrocheur…" required/>
+            </div>
+            <div class="form-group">
+                <label for="content-edit">Contenu</label>
+                <textarea id="content-edit" th:field="*{content}" placeholder="Rédigez votre post ici…" required></textarea>
+            </div>
+            <div class="form-footer">
+                <a class="btn-cancel" th:href="@{/posts}">Annuler</a>
+                <button type="submit" class="btn-submit">Enregistrer →</button>
+            </div>
+        </form>
+
+    </div>
+</div>
 </body>
-</html>l>
+</html>
