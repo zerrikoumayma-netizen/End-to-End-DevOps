@@ -15,6 +15,7 @@
             --border: #E2E0DB; --radius: 12px;
         }
         body { font-family: 'DM Sans', sans-serif; background: var(--bg); min-height: 100vh; }
+
         nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 60px; position: sticky; top: 0; z-index: 100; }
         .nav-brand { font-family: 'DM Serif Display', serif; font-size: 1.3rem; color: var(--accent); text-decoration: none; }
         .nav-actions { display: flex; gap: 0.75rem; align-items: center; }
@@ -23,9 +24,12 @@
         .btn-edit:hover { background: var(--accent-light); }
         .btn-delete { color: #C0392B; border-color: #FECACA; }
         .btn-delete:hover { background: #FEF2F2; }
+
         .container { max-width: 720px; margin: 0 auto; padding: 3rem 2rem; }
         .back-link { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--text-secondary); font-size: 0.85rem; text-decoration: none; margin-bottom: 2rem; transition: color 0.15s; }
         .back-link:hover { color: var(--accent); }
+
+        /* POST */
         .post-card { background: var(--surface); border-radius: 16px; padding: 3rem; box-shadow: 0 2px 20px rgba(0,0,0,0.06); margin-bottom: 2rem; }
         .post-meta { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1.2rem; flex-wrap: wrap; }
         .tag { background: var(--accent-light); color: var(--accent); font-size: 0.75rem; font-weight: 600; padding: 0.25rem 0.65rem; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.05em; }
@@ -36,6 +40,8 @@
         .post-title { font-family: 'DM Serif Display', serif; font-size: 2.2rem; color: var(--text-primary); line-height: 1.2; margin-bottom: 1.8rem; letter-spacing: -0.5px; }
         .post-divider { height: 1px; background: var(--border); margin-bottom: 1.8rem; }
         .post-body { font-size: 1rem; color: var(--text-primary); line-height: 1.8; white-space: pre-wrap; }
+
+        /* STATS */
         .post-stats { display: flex; align-items: center; gap: 1.2rem; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border); flex-wrap: wrap; }
         .stat-item { display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; color: var(--text-secondary); }
         .reaction-bar { display: flex; gap: 0.6rem; margin-left: auto; }
@@ -45,26 +51,59 @@
         .post-footer { margin-top: 1rem; }
         .btn-back-footer { font-size: 0.85rem; color: var(--text-secondary); text-decoration: none; }
         .btn-back-footer:hover { color: var(--accent); }
+
+        /* COMMENTAIRES */
         .comments-section { background: var(--surface); border-radius: 16px; padding: 2rem; box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
         .comments-header { font-family: 'DM Serif Display', serif; font-size: 1.4rem; color: var(--text-primary); margin-bottom: 1.5rem; display: flex; align-items: baseline; gap: 0.6rem; }
         .comment-count-badge { font-family: 'DM Sans', sans-serif; font-size: 0.82rem; color: var(--text-secondary); font-weight: 400; }
+
+        /* FORMULAIRE */
         .comment-form { margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
         .comment-form textarea { width: 100%; padding: 0.75rem 1rem; border: 1.5px solid var(--border); border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 0.93rem; color: var(--text-primary); background: #FAFAF8; resize: vertical; min-height: 90px; line-height: 1.6; transition: border-color 0.2s, box-shadow 0.2s; outline: none; }
         .comment-form textarea:focus { border-color: var(--accent); background: #fff; box-shadow: 0 0 0 3px var(--accent-light); }
         .comment-form-footer { display: flex; justify-content: flex-end; margin-top: 0.75rem; }
         .btn-comment { background: var(--accent); color: #fff; border: none; border-radius: 8px; padding: 0.55rem 1.2rem; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
         .btn-comment:hover { background: #235A40; }
-        .comment-list { display: flex; flex-direction: column; gap: 1.2rem; }
+
+        /* LISTE COMMENTAIRES */
+        .comment-list { display: flex; flex-direction: column; gap: 1.5rem; }
+
+        /* COMMENTAIRE ITEM */
         .comment-item { display: flex; gap: 1rem; }
         .comment-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; flex-shrink: 0; text-transform: uppercase; }
+        .comment-avatar.reply-avatar { width: 28px; height: 28px; font-size: 0.75rem; background: #8BAF9A; }
         .comment-body { flex: 1; }
         .comment-meta { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem; flex-wrap: wrap; }
         .comment-author { font-size: 0.85rem; font-weight: 600; color: var(--text-primary); }
         .comment-author-you { font-size: 0.72rem; color: var(--text-secondary); background: #F0F0EE; padding: 0.15rem 0.45rem; border-radius: 20px; }
         .comment-date { font-size: 0.78rem; color: var(--text-secondary); }
-        .comment-text { font-size: 0.92rem; color: var(--text-primary); line-height: 1.65; }
-        .btn-delete-comment { background: transparent; border: none; color: var(--text-secondary); font-size: 0.75rem; cursor: pointer; padding: 0.2rem 0.4rem; border-radius: 4px; font-family: 'DM Sans', sans-serif; transition: color 0.15s, background 0.15s; margin-left: auto; }
+        .comment-text { font-size: 0.92rem; color: var(--text-primary); line-height: 1.65; margin-bottom: 0.6rem; }
+
+        /* ACTIONS COMMENTAIRE : likes + répondre + supprimer */
+        .comment-actions { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+        .btn-comment-reaction { display: flex; align-items: center; gap: 0.3rem; border: 1px solid var(--border); border-radius: 20px; padding: 0.25rem 0.7rem; font-family: 'DM Sans', sans-serif; font-size: 0.78rem; color: var(--text-secondary); cursor: pointer; background: transparent; transition: all 0.15s; }
+        .btn-comment-reaction:hover { border-color: #aaa; }
+        .btn-comment-reaction.like-btn.active, .btn-comment-reaction.like-btn:hover { border-color: #27AE60; color: #27AE60; background: #F0FFF4; }
+        .btn-comment-reaction.dislike-btn.active, .btn-comment-reaction.dislike-btn:hover { border-color: #E74C3C; color: #E74C3C; background: #FFF5F5; }
+        .btn-reply-toggle { background: transparent; border: none; font-size: 0.78rem; color: var(--text-secondary); cursor: pointer; font-family: 'DM Sans', sans-serif; padding: 0.25rem 0.5rem; border-radius: 6px; transition: color 0.15s, background 0.15s; }
+        .btn-reply-toggle:hover { color: var(--accent); background: var(--accent-light); }
+        .btn-delete-comment { background: transparent; border: none; color: var(--text-secondary); font-size: 0.75rem; cursor: pointer; padding: 0.25rem 0.5rem; border-radius: 4px; font-family: 'DM Sans', sans-serif; transition: color 0.15s, background 0.15s; margin-left: auto; }
         .btn-delete-comment:hover { color: #C0392B; background: #FEF2F2; }
+
+        /* FORMULAIRE RÉPONSE */
+        .reply-form { display: none; margin-top: 0.75rem; }
+        .reply-form.open { display: block; }
+        .reply-form textarea { width: 100%; padding: 0.6rem 0.9rem; border: 1.5px solid var(--border); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; color: var(--text-primary); background: #FAFAF8; resize: vertical; min-height: 70px; line-height: 1.5; transition: border-color 0.2s, box-shadow 0.2s; outline: none; }
+        .reply-form textarea:focus { border-color: var(--accent); background: #fff; box-shadow: 0 0 0 3px var(--accent-light); }
+        .reply-form-footer { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.5rem; }
+        .btn-cancel-reply { background: transparent; border: 1.5px solid var(--border); color: var(--text-secondary); border-radius: 8px; padding: 0.4rem 0.9rem; font-family: 'DM Sans', sans-serif; font-size: 0.82rem; cursor: pointer; transition: all 0.15s; }
+        .btn-cancel-reply:hover { border-color: var(--text-secondary); }
+        .btn-submit-reply { background: var(--accent); color: #fff; border: none; border-radius: 8px; padding: 0.4rem 0.9rem; font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+        .btn-submit-reply:hover { background: #235A40; }
+
+        /* RÉPONSES IMBRIQUÉES */
+        .replies { margin-top: 1rem; padding-left: 1rem; border-left: 2px solid var(--border); display: flex; flex-direction: column; gap: 1rem; }
+
         .no-comments { text-align: center; padding: 2rem; color: var(--text-secondary); font-size: 0.9rem; }
     </style>
 </head>
@@ -85,6 +124,7 @@
 <div class="container">
     <a class="back-link" th:href="@{/posts}">← Tous les posts</a>
 
+    <!-- POST -->
     <div class="post-card">
         <div class="post-meta">
             <span class="tag">Post</span>
@@ -95,34 +135,26 @@
             <span class="meta-date" th:if="${post.createdAt != null}"
                   th:text="${#temporals.format(post.createdAt, 'dd MMMM yyyy')}"></span>
         </div>
-
         <h1 class="post-title" th:text="${post.title}">Titre</h1>
         <div class="post-divider"></div>
         <div class="post-body" th:text="${post.content}">Contenu…</div>
 
-        <!-- STATS + RÉACTIONS -->
         <div class="post-stats">
             <div class="stat-item">👁️ <span th:text="${post.views}">0</span> vue(s)</div>
             <div class="stat-item">💬 <span th:text="${#lists.size(comments)}">0</span> commentaire(s)</div>
-
             <div class="reaction-bar">
-                <button class="btn-reaction btn-like"
-                        id="btn-like"
+                <button class="btn-reaction btn-like" id="btn-like"
                         th:classappend="${likeStatus['userAction'] == 'like'} ? ' active' : ''"
-                        th:data-post-id="${post.id}"
-                        onclick="react(this, 'like')">
+                        th:data-post-id="${post.id}" onclick="reactPost(this, 'like')">
                     👍 <span id="like-count" th:text="${likeStatus['likes']}">0</span>
                 </button>
-                <button class="btn-reaction btn-dislike"
-                        id="btn-dislike"
+                <button class="btn-reaction btn-dislike" id="btn-dislike"
                         th:classappend="${likeStatus['userAction'] == 'dislike'} ? ' active' : ''"
-                        th:data-post-id="${post.id}"
-                        onclick="react(this, 'dislike')">
+                        th:data-post-id="${post.id}" onclick="reactPost(this, 'dislike')">
                     👎 <span id="dislike-count" th:text="${likeStatus['dislikes']}">0</span>
                 </button>
             </div>
         </div>
-
         <div class="post-footer">
             <a class="btn-back-footer" th:href="@{/posts}">← Retour à la liste</a>
         </div>
@@ -134,6 +166,8 @@
             Commentaires
             <span class="comment-count-badge" th:text="${#lists.size(comments)} + ' commentaire(s)'"></span>
         </div>
+
+        <!-- Formulaire nouveau commentaire -->
         <div class="comment-form">
             <form th:action="@{/posts/{id}/comments(id=${post.id})}" method="post">
                 <textarea name="content" placeholder="Écrivez votre commentaire…" required></textarea>
@@ -142,6 +176,8 @@
                 </div>
             </form>
         </div>
+
+        <!-- Liste commentaires racines -->
         <div class="comment-list" th:if="${not #lists.isEmpty(comments)}">
             <div class="comment-item" th:each="comment : ${comments}">
                 <div class="comment-avatar"
@@ -154,16 +190,84 @@
                               th:if="${comment.author != null and comment.author.id == currentUser.id}">vous</span>
                         <span class="comment-date" th:if="${comment.createdAt != null}"
                               th:text="${#temporals.format(comment.createdAt, 'dd MMM yyyy · HH:mm')}"></span>
+                    </div>
+                    <div class="comment-text" th:text="${comment.content}">Contenu…</div>
+
+                    <!-- ACTIONS : like / dislike / répondre / supprimer -->
+                    <div class="comment-actions">
+                        <button class="btn-comment-reaction like-btn"
+                                th:data-comment-id="${comment.id}"
+                                onclick="reactComment(this, 'like')">
+                            👍 <span class="c-like-count">0</span>
+                        </button>
+                        <button class="btn-comment-reaction dislike-btn"
+                                th:data-comment-id="${comment.id}"
+                                onclick="reactComment(this, 'dislike')">
+                            👎 <span class="c-dislike-count">0</span>
+                        </button>
+                        <button class="btn-reply-toggle"
+                                onclick="toggleReplyForm(this)">💬 Répondre</button>
                         <form th:if="${comment.author != null and comment.author.id == currentUser.id}"
                               th:action="@{/posts/{postId}/comments/{commentId}/delete(postId=${post.id}, commentId=${comment.id})}"
                               method="post" style="margin-left:auto;">
                             <button type="submit" class="btn-delete-comment">✕ Supprimer</button>
                         </form>
                     </div>
-                    <div class="comment-text" th:text="${comment.content}">Contenu…</div>
+
+                    <!-- FORMULAIRE RÉPONSE -->
+                    <div class="reply-form">
+                        <form th:action="@{/posts/{postId}/comments/{commentId}/reply(postId=${post.id}, commentId=${comment.id})}"
+                              method="post">
+                            <textarea name="content" placeholder="Répondez à ce commentaire…" required></textarea>
+                            <div class="reply-form-footer">
+                                <button type="button" class="btn-cancel-reply" onclick="cancelReply(this)">Annuler</button>
+                                <button type="submit" class="btn-submit-reply">Répondre →</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- RÉPONSES IMBRIQUÉES -->
+                    <div class="replies" th:if="${not #lists.isEmpty(comment.replies)}">
+                        <div class="comment-item" th:each="reply : ${comment.replies}">
+                            <div class="comment-avatar reply-avatar"
+                                 th:text="${reply.author != null ? #strings.substring(reply.author.username, 0, 1) : '?'}">A</div>
+                            <div class="comment-body">
+                                <div class="comment-meta">
+                                    <span class="comment-author"
+                                          th:text="${reply.author != null ? reply.author.username : 'Anonyme'}">Auteur</span>
+                                    <span class="comment-author-you"
+                                          th:if="${reply.author != null and reply.author.id == currentUser.id}">vous</span>
+                                    <span class="comment-date" th:if="${reply.createdAt != null}"
+                                          th:text="${#temporals.format(reply.createdAt, 'dd MMM yyyy · HH:mm')}"></span>
+                                </div>
+                                <div class="comment-text" th:text="${reply.content}">Réponse…</div>
+
+                                <!-- ACTIONS réponse -->
+                                <div class="comment-actions">
+                                    <button class="btn-comment-reaction like-btn"
+                                            th:data-comment-id="${reply.id}"
+                                            onclick="reactComment(this, 'like')">
+                                        👍 <span class="c-like-count">0</span>
+                                    </button>
+                                    <button class="btn-comment-reaction dislike-btn"
+                                            th:data-comment-id="${reply.id}"
+                                            onclick="reactComment(this, 'dislike')">
+                                        👎 <span class="c-dislike-count">0</span>
+                                    </button>
+                                    <form th:if="${reply.author != null and reply.author.id == currentUser.id}"
+                                          th:action="@{/posts/{postId}/comments/{commentId}/delete(postId=${post.id}, commentId=${reply.id})}"
+                                          method="post" style="margin-left:auto;">
+                                        <button type="submit" class="btn-delete-comment">✕ Supprimer</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
+
         <div class="no-comments" th:if="${#lists.isEmpty(comments)}">
             Aucun commentaire pour l'instant. Soyez le premier !
         </div>
@@ -171,24 +275,75 @@
 </div>
 
 <script>
-    function react(btn, type) {
-        const postId = btn.getAttribute('data-post-id');
-        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
+    // ── LIKE / DISLIKE POST ───────────────────────────────────
+    function reactPost(btn, type) {
+        const postId = btn.getAttribute('data-post-id');
         fetch('/posts/' + postId + '/' + type, {
-            method: 'POST',
-            headers: { [csrfHeader]: csrfToken }
+            method: 'POST', headers: { [csrfHeader]: csrfToken }
         })
-            .then(res => res.json())
+            .then(r => r.json())
             .then(data => {
                 document.getElementById('like-count').textContent = data.likes;
                 document.getElementById('dislike-count').textContent = data.dislikes;
                 document.getElementById('btn-like').classList.toggle('active', data.userAction === 'like');
                 document.getElementById('btn-dislike').classList.toggle('active', data.userAction === 'dislike');
-            })
-            .catch(err => console.error('Erreur:', err));
+            });
     }
+
+    // ── LIKE / DISLIKE COMMENTAIRE ────────────────────────────
+    function reactComment(btn, type) {
+        const commentId = btn.getAttribute('data-comment-id');
+        fetch('/comments/' + commentId + '/' + type, {
+            method: 'POST', headers: { [csrfHeader]: csrfToken }
+        })
+            .then(r => r.json())
+            .then(data => {
+                const actions = btn.closest('.comment-actions');
+                const likeBtn = actions.querySelector('.like-btn');
+                const dislikeBtn = actions.querySelector('.dislike-btn');
+                likeBtn.querySelector('.c-like-count').textContent = data.likes;
+                dislikeBtn.querySelector('.c-dislike-count').textContent = data.dislikes;
+                likeBtn.classList.toggle('active', data.userAction === 'like');
+                dislikeBtn.classList.toggle('active', data.userAction === 'dislike');
+            });
+    }
+
+    // ── FORMULAIRE RÉPONSE ────────────────────────────────────
+    function toggleReplyForm(btn) {
+        const replyForm = btn.closest('.comment-body').querySelector('.reply-form');
+        replyForm.classList.toggle('open');
+        if (replyForm.classList.contains('open')) {
+            replyForm.querySelector('textarea').focus();
+        }
+    }
+
+    function cancelReply(btn) {
+        btn.closest('.reply-form').classList.remove('open');
+    }
+
+    // ── CHARGER LES LIKES COMMENTAIRES AU CHARGEMENT ─────────
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.like-btn[data-comment-id]').forEach(btn => {
+            const commentId = btn.getAttribute('data-comment-id');
+            fetch('/comments/' + commentId + '/like-status', {
+                headers: { [csrfHeader]: csrfToken }
+            })
+                .then(r => r.ok ? r.json() : null)
+                .then(data => {
+                    if (!data) return;
+                    const actions = btn.closest('.comment-actions');
+                    const likeBtn = actions.querySelector('.like-btn');
+                    const dislikeBtn = actions.querySelector('.dislike-btn');
+                    likeBtn.querySelector('.c-like-count').textContent = data.likes;
+                    dislikeBtn.querySelector('.c-dislike-count').textContent = data.dislikes;
+                    likeBtn.classList.toggle('active', data.userAction === 'like');
+                    dislikeBtn.classList.toggle('active', data.userAction === 'dislike');
+                });
+        });
+    });
 </script>
 </body>
 </html>

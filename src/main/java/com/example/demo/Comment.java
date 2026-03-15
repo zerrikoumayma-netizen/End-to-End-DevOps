@@ -2,6 +2,8 @@ package com.example.demo;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Comment {
@@ -22,6 +24,15 @@ public class Comment {
     @JoinColumn(name = "author_id")
     private User author;
 
+    // AJOUTÉ : commentaire parent (null si c'est un commentaire racine)
+    @ManyToOne
+    @JoinColumn(name = "parent_id")
+    private Comment parent;
+
+    // AJOUTÉ : réponses à ce commentaire
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> replies = new ArrayList<>();
+
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
@@ -41,4 +52,10 @@ public class Comment {
 
     public User getAuthor() { return author; }
     public void setAuthor(User author) { this.author = author; }
+
+    public Comment getParent() { return parent; }
+    public void setParent(Comment parent) { this.parent = parent; }
+
+    public List<Comment> getReplies() { return replies; }
+    public void setReplies(List<Comment> replies) { this.replies = replies; }
 }

@@ -8,5 +8,10 @@ import java.util.List;
 
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
-    List<Comment> findByPostOrderByCreatedAtDesc(Post post);
+
+    // Commentaires racines seulement (sans parent)
+    List<Comment> findByPostAndParentIsNullOrderByCreatedAtDesc(Post post);
+
+    // Réponses à un commentaire
+    List<Comment> findByParentOrderByCreatedAtAsc(Comment parent);
 }
