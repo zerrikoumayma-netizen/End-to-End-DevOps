@@ -23,7 +23,6 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    // AJOUTÉ : nécessaire pour retrouver l'auteur connecté
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);
     }

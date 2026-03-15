@@ -1,13 +1,14 @@
 package com.example.demo.repositories;
 
-import org.apache.catalina.User;
+import com.example.demo.Post;
+import com.example.demo.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import com.example.demo.Post;
-
 import java.util.List;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
-    List<Post> findByAuthor(User author);
+    // AJOUTÉ : posts filtrés par auteur
+    List<Post> findByAuthorOrderByCreatedAtDesc(User author);
+    List<Post> findAllByOrderByCreatedAtDesc();
 }

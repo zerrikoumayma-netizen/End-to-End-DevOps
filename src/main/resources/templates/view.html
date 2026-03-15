@@ -2,6 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title th:text="${post.title}">Post</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
     <style>
@@ -24,25 +26,57 @@
         .container { max-width: 720px; margin: 0 auto; padding: 3rem 2rem; }
         .back-link { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--text-secondary); font-size: 0.85rem; text-decoration: none; margin-bottom: 2rem; transition: color 0.15s; }
         .back-link:hover { color: var(--accent); }
-        .post-card { background: var(--surface); border-radius: 16px; padding: 3rem; box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
-        .post-meta { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1.2rem; }
+        .post-card { background: var(--surface); border-radius: 16px; padding: 3rem; box-shadow: 0 2px 20px rgba(0,0,0,0.06); margin-bottom: 2rem; }
+        .post-meta { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1.2rem; flex-wrap: wrap; }
         .tag { background: var(--accent-light); color: var(--accent); font-size: 0.75rem; font-weight: 600; padding: 0.25rem 0.65rem; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.05em; }
-        .meta-info { font-size: 0.82rem; color: var(--text-secondary); }
-        .meta-dot { width: 3px; height: 3px; background: var(--border); border-radius: 50%; display: inline-block; margin: 0 0.2rem; vertical-align: middle; }
+        .author-link { font-size: 0.82rem; color: var(--accent); text-decoration: none; font-weight: 600; }
+        .author-link:hover { text-decoration: underline; }
+        .meta-date { font-size: 0.82rem; color: var(--text-secondary); }
+        .meta-dot { width: 3px; height: 3px; background: var(--border); border-radius: 50%; display: inline-block; }
         .post-title { font-family: 'DM Serif Display', serif; font-size: 2.2rem; color: var(--text-primary); line-height: 1.2; margin-bottom: 1.8rem; letter-spacing: -0.5px; }
         .post-divider { height: 1px; background: var(--border); margin-bottom: 1.8rem; }
         .post-body { font-size: 1rem; color: var(--text-primary); line-height: 1.8; white-space: pre-wrap; }
-        .post-footer { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .post-stats { display: flex; align-items: center; gap: 1.2rem; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border); flex-wrap: wrap; }
+        .stat-item { display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; color: var(--text-secondary); }
+        .reaction-bar { display: flex; gap: 0.6rem; margin-left: auto; }
+        .btn-reaction { display: flex; align-items: center; gap: 0.45rem; border: 1.5px solid var(--border); border-radius: 20px; padding: 0.4rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; color: var(--text-secondary); cursor: pointer; background: transparent; transition: all 0.2s; font-weight: 500; }
+        .btn-like.active, .btn-like:hover { border-color: #27AE60; color: #27AE60; background: #F0FFF4; }
+        .btn-dislike.active, .btn-dislike:hover { border-color: #E74C3C; color: #E74C3C; background: #FFF5F5; }
+        .post-footer { margin-top: 1rem; }
         .btn-back-footer { font-size: 0.85rem; color: var(--text-secondary); text-decoration: none; }
         .btn-back-footer:hover { color: var(--accent); }
+        .comments-section { background: var(--surface); border-radius: 16px; padding: 2rem; box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
+        .comments-header { font-family: 'DM Serif Display', serif; font-size: 1.4rem; color: var(--text-primary); margin-bottom: 1.5rem; display: flex; align-items: baseline; gap: 0.6rem; }
+        .comment-count-badge { font-family: 'DM Sans', sans-serif; font-size: 0.82rem; color: var(--text-secondary); font-weight: 400; }
+        .comment-form { margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
+        .comment-form textarea { width: 100%; padding: 0.75rem 1rem; border: 1.5px solid var(--border); border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 0.93rem; color: var(--text-primary); background: #FAFAF8; resize: vertical; min-height: 90px; line-height: 1.6; transition: border-color 0.2s, box-shadow 0.2s; outline: none; }
+        .comment-form textarea:focus { border-color: var(--accent); background: #fff; box-shadow: 0 0 0 3px var(--accent-light); }
+        .comment-form-footer { display: flex; justify-content: flex-end; margin-top: 0.75rem; }
+        .btn-comment { background: var(--accent); color: #fff; border: none; border-radius: 8px; padding: 0.55rem 1.2rem; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+        .btn-comment:hover { background: #235A40; }
+        .comment-list { display: flex; flex-direction: column; gap: 1.2rem; }
+        .comment-item { display: flex; gap: 1rem; }
+        .comment-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; flex-shrink: 0; text-transform: uppercase; }
+        .comment-body { flex: 1; }
+        .comment-meta { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem; flex-wrap: wrap; }
+        .comment-author { font-size: 0.85rem; font-weight: 600; color: var(--text-primary); }
+        .comment-author-you { font-size: 0.72rem; color: var(--text-secondary); background: #F0F0EE; padding: 0.15rem 0.45rem; border-radius: 20px; }
+        .comment-date { font-size: 0.78rem; color: var(--text-secondary); }
+        .comment-text { font-size: 0.92rem; color: var(--text-primary); line-height: 1.65; }
+        .btn-delete-comment { background: transparent; border: none; color: var(--text-secondary); font-size: 0.75rem; cursor: pointer; padding: 0.2rem 0.4rem; border-radius: 4px; font-family: 'DM Sans', sans-serif; transition: color 0.15s, background 0.15s; margin-left: auto; }
+        .btn-delete-comment:hover { color: #C0392B; background: #FEF2F2; }
+        .no-comments { text-align: center; padding: 2rem; color: var(--text-secondary); font-size: 0.9rem; }
     </style>
 </head>
 <body>
 <nav>
     <a class="nav-brand" th:href="@{/posts}">Demo3</a>
     <div class="nav-actions">
-        <a class="btn-action btn-edit" th:href="@{/posts/{id}/edit(id=${post.id})}">Éditer</a>
-        <form th:action="@{/posts/{id}/delete(id=${post.id})}" method="post" style="display:inline">
+        <a class="btn-action btn-edit"
+           th:if="${post.author != null and post.author.id == currentUser.id}"
+           th:href="@{/posts/{id}/edit(id=${post.id})}">Éditer</a>
+        <form th:if="${post.author != null and post.author.id == currentUser.id}"
+              th:action="@{/posts/{id}/delete(id=${post.id})}" method="post" style="display:inline">
             <button type="submit" class="btn-action btn-delete">Supprimer</button>
         </form>
     </div>
@@ -54,17 +88,107 @@
     <div class="post-card">
         <div class="post-meta">
             <span class="tag">Post</span>
-            <!-- CORRIGÉ : post.author.username -->
-            <span class="meta-info" th:text="${post.author != null ? post.author.username : 'Anonyme'}">Auteur</span>
+            <a class="author-link"
+               th:href="@{/posts(author=${post.author != null ? post.author.username : ''})}"
+               th:text="${post.author != null ? post.author.username : 'Anonyme'}">Auteur</a>
+            <div class="meta-dot"></div>
+            <span class="meta-date" th:if="${post.createdAt != null}"
+                  th:text="${#temporals.format(post.createdAt, 'dd MMMM yyyy')}"></span>
         </div>
+
         <h1 class="post-title" th:text="${post.title}">Titre</h1>
         <div class="post-divider"></div>
         <div class="post-body" th:text="${post.content}">Contenu…</div>
+
+        <!-- STATS + RÉACTIONS -->
+        <div class="post-stats">
+            <div class="stat-item">👁️ <span th:text="${post.views}">0</span> vue(s)</div>
+            <div class="stat-item">💬 <span th:text="${#lists.size(comments)}">0</span> commentaire(s)</div>
+
+            <div class="reaction-bar">
+                <button class="btn-reaction btn-like"
+                        id="btn-like"
+                        th:classappend="${likeStatus['userAction'] == 'like'} ? ' active' : ''"
+                        th:data-post-id="${post.id}"
+                        onclick="react(this, 'like')">
+                    👍 <span id="like-count" th:text="${likeStatus['likes']}">0</span>
+                </button>
+                <button class="btn-reaction btn-dislike"
+                        id="btn-dislike"
+                        th:classappend="${likeStatus['userAction'] == 'dislike'} ? ' active' : ''"
+                        th:data-post-id="${post.id}"
+                        onclick="react(this, 'dislike')">
+                    👎 <span id="dislike-count" th:text="${likeStatus['dislikes']}">0</span>
+                </button>
+            </div>
+        </div>
+
         <div class="post-footer">
             <a class="btn-back-footer" th:href="@{/posts}">← Retour à la liste</a>
-            <a class="btn-action btn-edit" th:href="@{/posts/{id}/edit(id=${post.id})}">Éditer ce post</a>
+        </div>
+    </div>
+
+    <!-- COMMENTAIRES -->
+    <div class="comments-section">
+        <div class="comments-header">
+            Commentaires
+            <span class="comment-count-badge" th:text="${#lists.size(comments)} + ' commentaire(s)'"></span>
+        </div>
+        <div class="comment-form">
+            <form th:action="@{/posts/{id}/comments(id=${post.id})}" method="post">
+                <textarea name="content" placeholder="Écrivez votre commentaire…" required></textarea>
+                <div class="comment-form-footer">
+                    <button type="submit" class="btn-comment">Commenter →</button>
+                </div>
+            </form>
+        </div>
+        <div class="comment-list" th:if="${not #lists.isEmpty(comments)}">
+            <div class="comment-item" th:each="comment : ${comments}">
+                <div class="comment-avatar"
+                     th:text="${comment.author != null ? #strings.substring(comment.author.username, 0, 1) : '?'}">A</div>
+                <div class="comment-body">
+                    <div class="comment-meta">
+                        <span class="comment-author"
+                              th:text="${comment.author != null ? comment.author.username : 'Anonyme'}">Auteur</span>
+                        <span class="comment-author-you"
+                              th:if="${comment.author != null and comment.author.id == currentUser.id}">vous</span>
+                        <span class="comment-date" th:if="${comment.createdAt != null}"
+                              th:text="${#temporals.format(comment.createdAt, 'dd MMM yyyy · HH:mm')}"></span>
+                        <form th:if="${comment.author != null and comment.author.id == currentUser.id}"
+                              th:action="@{/posts/{postId}/comments/{commentId}/delete(postId=${post.id}, commentId=${comment.id})}"
+                              method="post" style="margin-left:auto;">
+                            <button type="submit" class="btn-delete-comment">✕ Supprimer</button>
+                        </form>
+                    </div>
+                    <div class="comment-text" th:text="${comment.content}">Contenu…</div>
+                </div>
+            </div>
+        </div>
+        <div class="no-comments" th:if="${#lists.isEmpty(comments)}">
+            Aucun commentaire pour l'instant. Soyez le premier !
         </div>
     </div>
 </div>
+
+<script>
+    function react(btn, type) {
+        const postId = btn.getAttribute('data-post-id');
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+        fetch('/posts/' + postId + '/' + type, {
+            method: 'POST',
+            headers: { [csrfHeader]: csrfToken }
+        })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('like-count').textContent = data.likes;
+                document.getElementById('dislike-count').textContent = data.dislikes;
+                document.getElementById('btn-like').classList.toggle('active', data.userAction === 'like');
+                document.getElementById('btn-dislike').classList.toggle('active', data.userAction === 'dislike');
+            })
+            .catch(err => console.error('Erreur:', err));
+    }
+</script>
 </body>
 </html>
