@@ -3,9 +3,13 @@ package com.example.demo;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
+// JOINED : chaque sous-classe a sa propre table liée à la table post
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Post {
 
     @Id
@@ -14,21 +18,30 @@ public class Post {
 
     private String title;
     private String content;
-
     private LocalDateTime createdAt;
-
-    // AJOUTÉ : nombre de vues
     private int views = 0;
-
-    // AJOUTÉ : nombre de likes
     private int likes = 0;
 
     @ManyToOne
     @JoinColumn(name = "author_id")
     private User author;
 
+    // ManyToMany : un post peut avoir plusieurs tags
+    // Post gère la table de jointure "post_tag"
+    @ManyToMany
+    @JoinTable(
+            name = "post_tag",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private Set<Tag> tags = new HashSet<>();
+
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
+
+    // Réactions (classe d'association)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Reaction> reactions = new ArrayList<>();
 
     @PrePersist
     public void prePersist() {
@@ -56,6 +69,12 @@ public class Post {
     public User getAuthor() { return author; }
     public void setAuthor(User author) { this.author = author; }
 
+    public Set<Tag> getTags() { return tags; }
+    public void setTags(Set<Tag> tags) { this.tags = tags; }
+
     public List<Comment> getComments() { return comments; }
     public void setComments(List<Comment> comments) { this.comments = comments; }
+
+    public List<Reaction> getReactions() { return reactions; }
+    public void setReactions(List<Reaction> reactions) { this.reactions = reactions; }
 }

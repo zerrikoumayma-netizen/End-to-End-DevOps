@@ -22,15 +22,16 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/register", "/login", "/h2-console/**", "/css/**").permitAll()
+                        .requestMatchers("/register", "/login", "/login/**",
+                                "/h2-console/**", "/css/**", "/js/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .loginProcessingUrl("/login") // ← ajouter cette ligne !
+                        .loginProcessingUrl("/login")
                         .defaultSuccessUrl("/posts", true)
-                        .failureUrl("/login?error") // ← ajouter cette ligne !
+                        .failureUrl("/login?error")
                         .permitAll()
                 )
                 .logout(logout -> logout
@@ -48,10 +49,12 @@ public class SecurityConfig {
         return http.build();
     }
 
+    // IMPORTANT : ce bean est utilisé par UserService pour encoder les mots de passe
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder auth =

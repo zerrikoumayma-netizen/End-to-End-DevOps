@@ -1,10 +1,11 @@
 package com.example.demo;
 
-import com.example.demo.repositories.PostLikeRepository;
 import com.example.demo.repositories.PostRepository;
 import com.example.demo.repositories.PostViewRepository;
+import com.example.demo.repositories.ReactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,16 +16,18 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final PostViewRepository postViewRepository;
-    private final PostLikeRepository postLikeRepository;
+    private final ReactionRepository reactionRepository;
 
     @Autowired
     public PostService(PostRepository postRepository,
                        PostViewRepository postViewRepository,
-                       PostLikeRepository postLikeRepository) {
+                       ReactionRepository reactionRepository) {
         this.postRepository = postRepository;
         this.postViewRepository = postViewRepository;
-        this.postLikeRepository = postLikeRepository;
+        this.reactionRepository = reactionRepository;
     }
+
+    // ── CRUD ──────────────────────────────────────────────────
 
     public List<Post> getAllPosts() {
         return postRepository.findAllByOrderByCreatedAtDesc();
@@ -50,7 +53,7 @@ public class PostService {
         postRepository.deleteById(id);
     }
 
-    // ── VUES ─────────────────────────────────────────────────
+    // ── VUES ──────────────────────────────────────────────────
 
     public void incrementViews(Post post, User user) {
         boolean alreadyViewed = postViewRepository.existsByPostAndUser(post, user);
@@ -64,96 +67,75 @@ public class PostService {
         }
     }
 
-    // ── LIKES ─────────────────────────────────────────────────
+    // ── RÉACTIONS (remplace PostLike) ─────────────────────────
 
     /**
-     * Retourne : likes, dislikes, userAction ("like" | "dislike" | "none")
-     *
-     * Comportement :
-     * - Si l'utilisateur n'a pas encore liké → like (+1)
-     * - Si l'utilisateur a déjà liké → annule le like (unlike)
-     * - Si l'utilisateur a déjà disliké → passe en like
+     * Ajoute ou change la réaction d'un utilisateur sur un post.
+     * - Si même réaction → annule (supprime)
+     * - Si réaction différente → change
+     * - Si aucune réaction → ajoute
      */
-    public Map<String, Object> toggleLike(Post post, User user) {
-        Optional<PostLike> existing = postLikeRepository.findByPostAndUser(post, user);
+    public Map<String, Object> react(Post post, User user, ReactionType type) {
+        Optional<Reaction> existing = reactionRepository.findByUserAndPost(user, post);
 
         if (existing.isPresent()) {
-            PostLike postLike = existing.get();
-            if (postLike.isLiked()) {
-                // déjà liké → annuler le like
-                postLikeRepository.delete(postLike);
+            Reaction reaction = existing.get();
+            if (reaction.getType() == type) {
+                // même réaction → annuler
+                reactionRepository.delete(reaction);
             } else {
-                // avait disliké → passe en like
-                postLike.setLiked(true);
-                postLikeRepository.save(postLike);
+                // réaction différente → changer
+                reaction.setType(type);
+                reactionRepository.save(reaction);
             }
         } else {
-            // pas encore de réaction → like
-            PostLike postLike = new PostLike();
-            postLike.setPost(post);
-            postLike.setUser(user);
-            postLike.setLiked(true);
-            postLikeRepository.save(postLike);
+            // nouvelle réaction
+            Reaction reaction = new Reaction();
+            reaction.setPost(post);
+            reaction.setUser(user);
+            reaction.setType(type);
+            reactionRepository.save(reaction);
         }
 
-        return buildLikeResult(post, user);
+        return buildReactionResult(post, user);
     }
 
-    /**
-     * Comportement dislike :
-     * - Si l'utilisateur n'a pas encore réagi → dislike
-     * - Si l'utilisateur a déjà disliké → annule le dislike
-     * - Si l'utilisateur a déjà liké → passe en dislike
-     */
-    public Map<String, Object> toggleDislike(Post post, User user) {
-        Optional<PostLike> existing = postLikeRepository.findByPostAndUser(post, user);
-
-        if (existing.isPresent()) {
-            PostLike postLike = existing.get();
-            if (!postLike.isLiked()) {
-                // déjà disliké → annuler le dislike
-                postLikeRepository.delete(postLike);
-            } else {
-                // avait liké → passe en dislike
-                postLike.setLiked(false);
-                postLikeRepository.save(postLike);
-            }
-        } else {
-            // pas encore de réaction → dislike
-            PostLike postLike = new PostLike();
-            postLike.setPost(post);
-            postLike.setUser(user);
-            postLike.setLiked(false);
-            postLikeRepository.save(postLike);
-        }
-
-        return buildLikeResult(post, user);
+    // Récupère l'état des réactions pour un post + un utilisateur
+    public Map<String, Object> getLikeStatus(Post post, User user) {
+        return buildReactionResult(post, user);
     }
 
-    // Retourne les compteurs et l'état de l'utilisateur
-    private Map<String, Object> buildLikeResult(Post post, User user) {
-        long likes = postLikeRepository.countByPostAndLiked(post, true);
-        long dislikes = postLikeRepository.countByPostAndLiked(post, false);
-        Optional<PostLike> userReaction = postLikeRepository.findByPostAndUser(post, user);
+    private Map<String, Object> buildReactionResult(Post post, User user) {
+        List<Reaction> allReactions = reactionRepository.findByPost(post);
 
-        String userAction = "none";
-        if (userReaction.isPresent()) {
-            userAction = userReaction.get().isLiked() ? "like" : "dislike";
+        // Compter chaque type de réaction
+        Map<String, Long> counts = new HashMap<>();
+        for (ReactionType type : ReactionType.values()) {
+            long count = allReactions.stream()
+                    .filter(r -> r.getType() == type)
+                    .count();
+            counts.put(type.name(), count);
         }
 
-        // Met à jour les compteurs dans Post
-        post.setLikes((int) likes);
-        postRepository.save(post);
+        // Réaction de l'utilisateur connecté
+        String userReaction = "NONE";
+        Optional<Reaction> userR = reactionRepository.findByUserAndPost(user, post);
+        if (userR.isPresent()) {
+            userReaction = userR.get().getType().name();
+        }
 
         Map<String, Object> result = new HashMap<>();
-        result.put("likes", likes);
-        result.put("dislikes", dislikes);
-        result.put("userAction", userAction);
+        result.put("counts", counts);       // ex: {LIKE=3, LOVE=1, HAHA=0 ...}
+        result.put("userReaction", userReaction); // ex: "LIKE" ou "NONE"
+        result.put("total", allReactions.size());
         return result;
     }
 
-    // Récupère l'état like/dislike d'un utilisateur sur un post
-    public Map<String, Object> getLikeStatus(Post post, User user) {
-        return buildLikeResult(post, user);
+    public Map<String, Object> toggleLike(Post post, User user) {
+        return Map.of();
+    }
+
+    public Map<String, Object> toggleDislike(Post post, User user) {
+        return Map.of();
     }
 }

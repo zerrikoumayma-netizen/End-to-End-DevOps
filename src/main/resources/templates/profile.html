@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title th:text="'Profil de ' + ${user.username}">Profil</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #F7F5F2; --surface: #FFFFFF;
+            --text-primary: #1A1A18; --text-secondary: #6B6B65;
+            --accent: #2D6A4F; --accent-light: #E8F4EF;
+            --border: #E2E0DB; --radius: 12px;
+        }
+        body { font-family: 'DM Sans', sans-serif; background: var(--bg ); min-height: 100vh; color: var(--text-primary); }
+        nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 60px; position: sticky; top: 0; z-index: 100; }
+        .nav-brand { font-family: 'DM Serif Display', serif; font-size: 1.3rem; color: var(--accent); text-decoration: none; }
+
+        .container { max-width: 800px; margin: 0 auto; padding: 3rem 2rem; }
+        .back-link { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--text-secondary); font-size: 0.85rem; text-decoration: none; margin-bottom: 2rem; }
+        .back-link:hover { color: var(--accent); }
+
+        /* PROFILE HEADER */
+        .profile-card { background: var(--surface); border-radius: 16px; padding: 3rem; box-shadow: 0 2px 20px rgba(0,0,0,0.06); margin-bottom: 2rem; text-align: center; }
+        .profile-avatar { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 4px solid var(--accent-light); margin-bottom: 1.5rem; }
+        .profile-avatar-placeholder { width: 100px; height: 100px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: 700; text-transform: uppercase; margin: 0 auto 1.5rem; }
+        .profile-name { font-family: 'DM Serif Display', serif; font-size: 2rem; margin-bottom: 0.5rem; }
+        .profile-email { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1rem; }
+        .profile-bio { font-size: 1.05rem; line-height: 1.6; color: var(--text-secondary); max-width: 500px; margin: 0 auto 1.5rem; }
+
+        .profile-stats { display: flex; justify-content: center; gap: 2rem; border-top: 1px solid var(--border); padding-top: 1.5rem; }
+        .stat-box { display: flex; flex-direction: column; align-items: center; }
+        .stat-value { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
+        .stat-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); }
+
+        /* USER POSTS */
+        .section-title { font-family: 'DM Serif Display', serif; font-size: 1.5rem; margin-bottom: 1.5rem; color: var(--text-primary); }
+        .post-list { display: flex; flex-direction: column; gap: 1rem; }
+        .post-item { background: var(--surface); border-radius: var(--radius); padding: 1.5rem; border: 1px solid var(--border); transition: transform 0.2s, box-shadow 0.2s; text-decoration: none; color: inherit; display: block; }
+        .post-item:hover { transform: translateY(-3px); box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-color: var(--accent); }
+        .post-item-title { font-weight: 600; font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--text-primary); }
+        .post-item-meta { font-size: 0.8rem; color: var(--text-secondary); display: flex; gap: 1rem; }
+        .no-posts { text-align: center; padding: 3rem; background: var(--surface); border-radius: var(--radius); border: 1px dashed var(--border); color: var(--text-secondary); }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a class="nav-brand" th:href="@{/posts}">Demo3</a>
+</nav>
+
+<div class="container">
+    <a class="back-link" th:href="@{/posts}">← Retour aux posts</a>
+
+    <!-- CARTE DE PROFIL -->
+    <div class="profile-card">
+        <!-- Avatar -->
+        <img class="profile-avatar"
+             th:if="${user.profile != null and user.profile.avatar != null}"
+             th:src="${user.profile.avatar}"
+             th:alt="${user.username}"/>
+        <div class="profile-avatar-placeholder"
+             th:unless="${user.profile != null and user.profile.avatar != null}"
+             th:text="${#strings.substring(user.username, 0, 1)}">U</div>
+
+        <h1 class="profile-name" th:text="${user.username}">Nom d'utilisateur</h1>
+        <p class="profile-email" th:text="${user.email}">email@example.com</p>
+
+        <div class="profile-bio"
+             th:if="${user.profile != null and user.profile.bio != null}"
+             th:text="${user.profile.bio}">
+            Ceci est la biographie de l'utilisateur.
+        </div>
+        <div class="profile-bio" th:unless="${user.profile != null and user.profile.bio != null}">
+            Cet utilisateur n'a pas encore rédigé de biographie.
+        </div>
+
+        <div class="profile-stats">
+            <div class="stat-box">
+                <span class="stat-value" th:text="${#lists.size(posts)}">0</span>
+                <span class="stat-label">Posts</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-value" th:text="${user.role}">USER</span>
+                <span class="stat-label">Rôle</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- LISTE DES POSTS DE L'UTILISATEUR -->
+    <h2 class="section-title">Publications</h2>
+
+    <div class="post-list" th:if="${not #lists.isEmpty(posts)}">
+        <a th:each="p : ${posts}" th:href="@{/posts/{id}(id=${p.id})}" class="post-item">
+            <div class="post-item-title" th:text="${p.title}">Titre du post</div>
+            <div class="post-item-meta">
+                <span th:text="${#temporals.format(p.createdAt, 'dd MMM yyyy')}">Date</span>
+                <span>•</span>
+                <span th:text="${p.views} + ' vues'">0 vues</span>
+                <span>•</span>
+                <span th:if="${p.class.simpleName == 'VideoPost'}">🎬 Vidéo</span>
+                <span th:unless="${p.class.simpleName == 'VideoPost'}">📝 Article</span>
+            </div>
+        </a>
+    </div>
+
+    <div class="no-posts" th:if="${#lists.isEmpty(posts)}">
+        Cet utilisateur n'a encore rien publié.
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>Post</title>
+    <title>Nouveau post</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -17,22 +17,50 @@
         .nav-brand { font-family: 'DM Serif Display', serif; font-size: 1.3rem; color: var(--accent); text-decoration: none; }
         .nav-link { color: var(--text-secondary); font-size: 0.88rem; text-decoration: none; padding: 0.4rem 0.8rem; border-radius: 8px; transition: background 0.15s, color 0.15s; }
         .nav-link:hover { background: var(--accent-light); color: var(--accent); }
-        .container { max-width: 680px; margin: 0 auto; padding: 3rem 2rem; }
-        .page-header { margin-bottom: 2.5rem; }
-        .back-link { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--text-secondary); font-size: 0.85rem; text-decoration: none; margin-bottom: 1.2rem; transition: color 0.15s; }
+        .container { max-width: 700px; margin: 0 auto; padding: 3rem 2rem; }
+        .back-link { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--text-secondary); font-size: 0.85rem; text-decoration: none; margin-bottom: 1.2rem; }
         .back-link:hover { color: var(--accent); }
-        .page-header h1 { font-family: 'DM Serif Display', serif; font-size: 2rem; color: var(--text-primary); }
+        .page-header h1 { font-family: 'DM Serif Display', serif; font-size: 2rem; color: var(--text-primary); margin-bottom: 2rem; }
         .form-card { background: var(--surface); border-radius: 16px; padding: 2.5rem; box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
-        .form-group { margin-bottom: 1.5rem; }
+
+        /* TYPE SELECTOR */
+        .type-selector { display: flex; gap: 0.75rem; margin-bottom: 2rem; }
+        .type-btn { flex: 1; padding: 0.85rem; border: 2px solid var(--border); border-radius: var(--radius); background: #FAFAF8; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 500; color: var(--text-secondary); transition: all 0.2s; text-align: center; }
+        .type-btn.active { border-color: var(--accent); background: var(--accent-light); color: var(--accent); font-weight: 600; }
+        .type-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .type-icon { font-size: 1.3rem; display: block; margin-bottom: 0.3rem; }
+
+        .form-group { margin-bottom: 1.4rem; }
         label { display: block; font-size: 0.82rem; font-weight: 500; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.45rem; }
-        input[type="text"] { width: 100%; padding: 0.78rem 1rem; border: 1.5px solid var(--border); border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 0.95rem; color: var(--text-primary); background: #FAFAF8; transition: border-color 0.2s, box-shadow 0.2s; outline: none; }
-        textarea { width: 100%; padding: 0.78rem 1rem; border: 1.5px solid var(--border); border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 0.95rem; color: var(--text-primary); background: #FAFAF8; resize: vertical; min-height: 180px; line-height: 1.6; transition: border-color 0.2s, box-shadow 0.2s; outline: none; }
+        input[type="text"], input[type="url"], textarea {
+            width: 100%; padding: 0.78rem 1rem; border: 1.5px solid var(--border); border-radius: var(--radius);
+            font-family: 'DM Sans', sans-serif; font-size: 0.95rem; color: var(--text-primary);
+            background: #FAFAF8; transition: border-color 0.2s, box-shadow 0.2s; outline: none;
+        }
+        textarea { resize: vertical; min-height: 180px; line-height: 1.6; }
         input:focus, textarea:focus { border-color: var(--accent); background: #fff; box-shadow: 0 0 0 3px var(--accent-light); }
+
+        /* CHAMP VIDEO (caché par défaut) */
+        .video-field { display: none; }
+        .video-field.visible { display: block; }
+        .article-field { display: block; }
+        .article-field.hidden { display: none; }
+
+        /* TAGS */
+        .tags-input-wrapper { display: flex; flex-wrap: wrap; gap: 0.4rem; padding: 0.6rem 0.8rem; border: 1.5px solid var(--border); border-radius: var(--radius); background: #FAFAF8; min-height: 48px; cursor: text; transition: border-color 0.2s, box-shadow 0.2s; }
+        .tags-input-wrapper:focus-within { border-color: var(--accent); background: #fff; box-shadow: 0 0 0 3px var(--accent-light); }
+        .tag-chip { display: flex; align-items: center; gap: 0.3rem; background: var(--accent); color: #fff; font-size: 0.78rem; font-weight: 600; padding: 0.2rem 0.6rem; border-radius: 20px; }
+        .tag-chip button { background: transparent; border: none; color: rgba(255,255,255,0.8); cursor: pointer; font-size: 0.9rem; line-height: 1; padding: 0; }
+        .tag-chip button:hover { color: #fff; }
+        .tags-input { border: none; outline: none; background: transparent; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; color: var(--text-primary); flex: 1; min-width: 120px; }
+        .tag-hint { font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.3rem; }
+
+        /* RÉSUMÉ (Article) */
         .form-footer { display: flex; gap: 1rem; align-items: center; padding-top: 0.5rem; }
         .btn-submit { flex: 1; padding: 0.85rem; background: var(--accent); color: #fff; border: none; border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s, transform 0.1s; }
         .btn-submit:hover { background: #235A40; }
         .btn-submit:active { transform: scale(0.99); }
-        .btn-cancel { padding: 0.85rem 1.5rem; background: transparent; color: var(--text-secondary); border: 1.5px solid var(--border); border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 0.88rem; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; transition: border-color 0.15s, color 0.15s; }
+        .btn-cancel { padding: 0.85rem 1.5rem; background: transparent; color: var(--text-secondary); border: 1.5px solid var(--border); border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 0.88rem; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; transition: all 0.15s; }
         .btn-cancel:hover { border-color: var(--text-secondary); color: var(--text-primary); }
     </style>
 </head>
@@ -43,38 +71,86 @@
 </nav>
 
 <div class="container">
+    <a class="back-link" th:href="@{/posts}">← Tous les posts</a>
     <div class="page-header">
-        <a class="back-link" th:href="@{/posts}">← Tous les posts</a>
         <h1 th:text="${post.id == null ? 'Nouveau post' : 'Modifier le post'}">Nouveau post</h1>
     </div>
 
     <div class="form-card">
 
-        <!-- Formulaire CRÉATION -->
-        <form th:if="${post.id == null}" th:action="@{/posts}" th:object="${post}" method="post">
+        <!-- SÉLECTEUR DE TYPE -->
+        <div th:if="${post.id == null}">
+            <label>Type de post</label>
+            <div class="type-selector" style="margin-top:0.45rem;">
+                <button type="button" class="type-btn active" id="btn-article" onclick="selectType('article')">
+                    <span class="type-icon">📝</span> Article
+                </button>
+                <button type="button" class="type-btn" id="btn-video" onclick="selectType('video')">
+                    <span class="type-icon">🎬</span> Vidéo
+                </button>
+            </div>
+        </div>
+
+        <!-- FORMULAIRE CRÉATION ARTICLE -->
+        <form th:if="${post.id == null}" id="form-create" th:action="@{/posts}" method="post">
+            <input type="hidden" id="postType" name="postType" value="article"/>
+
             <div class="form-group">
                 <label for="title">Titre</label>
-                <input type="text" id="title" th:field="*{title}" placeholder="Donnez un titre accrocheur…" required/>
+                <input type="text" id="title" name="title" placeholder="Donnez un titre accrocheur…" required/>
             </div>
+
+            <!-- Résumé (Article seulement) -->
+            <div class="form-group article-field" id="summary-field">
+                <label for="summary">Résumé</label>
+                <input type="text" id="summary" name="summary" placeholder="Un court résumé de l'article…"/>
+            </div>
+
+            <!-- URL Vidéo (VideoPost seulement) -->
+            <div class="form-group video-field" id="url-field">
+                <label for="url">URL de la vidéo</label>
+                <input type="url" id="url" name="url" placeholder="https://youtube.com/watch?v=…"/>
+            </div>
+
             <div class="form-group">
                 <label for="content">Contenu</label>
-                <textarea id="content" th:field="*{content}" placeholder="Rédigez votre post ici…" required></textarea>
+                <textarea id="content" name="content" placeholder="Rédigez votre contenu ici…" required></textarea>
             </div>
+
+            <!-- TAGS -->
+            <div class="form-group">
+                <label>Tags</label>
+                <div class="tags-input-wrapper" id="tags-wrapper" onclick="document.getElementById('tag-input').focus()">
+                    <input type="text" class="tags-input" id="tag-input" placeholder="Ajouter un tag…"/>
+                </div>
+                <input type="hidden" id="tags-hidden" name="tags" value=""/>
+                <p class="tag-hint">Appuyez sur Entrée ou virgule pour ajouter un tag</p>
+            </div>
+
             <div class="form-footer">
                 <a class="btn-cancel" th:href="@{/posts}">Annuler</a>
                 <button type="submit" class="btn-submit">Publier →</button>
             </div>
         </form>
 
-        <!-- Formulaire ÉDITION -->
-        <form th:if="${post.id != null}" th:action="@{/posts/{id}/edit(id=${post.id})}" th:object="${post}" method="post">
+        <!-- FORMULAIRE ÉDITION -->
+        <form th:if="${post.id != null}" th:action="@{/posts/{id}/edit(id=${post.id})}" method="post">
             <div class="form-group">
                 <label for="title-edit">Titre</label>
-                <input type="text" id="title-edit" th:field="*{title}" placeholder="Donnez un titre accrocheur…" required/>
+                <input type="text" id="title-edit" name="title" th:value="${post.title}" required/>
             </div>
             <div class="form-group">
                 <label for="content-edit">Contenu</label>
-                <textarea id="content-edit" th:field="*{content}" placeholder="Rédigez votre post ici…" required></textarea>
+                <textarea id="content-edit" name="content" th:text="${post.content}" required></textarea>
+            </div>
+            <!-- Tags existants -->
+            <div class="form-group">
+                <label>Tags actuels</label>
+                <div style="display:flex; flex-wrap:wrap; gap:0.4rem; margin-top:0.3rem;">
+                    <span th:each="tag : ${post.tags}"
+                          style="background:var(--accent);color:#fff;font-size:0.78rem;padding:0.2rem 0.6rem;border-radius:20px;"
+                          th:text="'#' + ${tag.name}">tag</span>
+                </div>
             </div>
             <div class="form-footer">
                 <a class="btn-cancel" th:href="@{/posts}">Annuler</a>
@@ -84,5 +160,64 @@
 
     </div>
 </div>
+<select name="tags" multiple class="form-control">
+    <option th:each="tag : ${allTags}"
+            th:value="${tag.id}"
+            th:text="${tag.name}">Tag Name</option>
+</select>
+
+
+<script>
+    // ── TYPE SELECTOR ─────────────────────────────────────────
+    function selectType(type) {
+        document.getElementById('postType').value = type;
+        document.getElementById('btn-article').classList.toggle('active', type === 'article');
+        document.getElementById('btn-video').classList.toggle('active', type === 'video');
+        document.getElementById('summary-field').classList.toggle('hidden', type !== 'article');
+        document.getElementById('url-field').classList.toggle('visible', type === 'video');
+    }
+
+    // ── TAGS ──────────────────────────────────────────────────
+    const tags = [];
+
+    function renderTags() {
+        const wrapper = document.getElementById('tags-wrapper');
+        // remove old chips
+        wrapper.querySelectorAll('.tag-chip').forEach(c => c.remove());
+        const input = document.getElementById('tag-input');
+        tags.forEach(tag => {
+            const chip = document.createElement('span');
+            chip.className = 'tag-chip';
+            chip.innerHTML = `#${tag} <button type="button" onclick="removeTag('${tag}')">✕</button>`;
+            wrapper.insertBefore(chip, input);
+        });
+        document.getElementById('tags-hidden').value = tags.join(',');
+    }
+
+    function addTag(value) {
+        const tag = value.trim().toLowerCase().replace(/\s+/g, '-');
+        if (tag && !tags.includes(tag)) {
+            tags.push(tag);
+            renderTags();
+        }
+    }
+
+    function removeTag(tag) {
+        const idx = tags.indexOf(tag);
+        if (idx > -1) { tags.splice(idx, 1); renderTags(); }
+    }
+
+    document.getElementById('tag-input').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ',') {
+            e.preventDefault();
+            addTag(this.value);
+            this.value = '';
+        }
+        if (e.key === 'Backspace' && this.value === '' && tags.length > 0) {
+            tags.pop();
+            renderTags();
+        }
+    });
+</script>
 </body>
 </html>

@@ -18,41 +18,57 @@
         .nav-actions { display: flex; align-items: center; gap: 1rem; }
         .nav-user { font-size: 0.85rem; color: var(--text-secondary); }
         .nav-user span { font-weight: 600; color: var(--text-primary); }
+        .nav-avatar { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-light); }
+        .nav-avatar-placeholder { width: 30px; height: 30px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
         .btn-new { background: var(--accent); color: #fff; font-size: 0.85rem; font-weight: 600; padding: 0.45rem 1rem; border-radius: 8px; text-decoration: none; transition: background 0.2s; }
         .btn-new:hover { background: #235A40; }
-        .btn-logout { background: transparent; border: none; color: var(--text-secondary); font-size: 0.85rem; padding: 0.4rem 0.8rem; border-radius: 8px; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background 0.15s, color 0.15s; }
+        .btn-logout { background: transparent; border: none; color: var(--text-secondary); font-size: 0.85rem; padding: 0.4rem 0.8rem; border-radius: 8px; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background 0.15s; }
         .btn-logout:hover { background: #FEF2F2; color: #C0392B; }
 
         .container { max-width: 820px; margin: 0 auto; padding: 3rem 2rem; }
-        .filter-bar { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 2rem; flex-wrap: wrap; }
+        .filter-bar { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
         .filter-bar h1 { font-family: 'DM Serif Display', serif; font-size: 2rem; color: var(--text-primary); flex: 1; }
         .filter-tag { background: var(--accent); color: #fff; font-size: 0.8rem; font-weight: 600; padding: 0.3rem 0.8rem; border-radius: 20px; display: flex; align-items: center; gap: 0.5rem; }
         .filter-tag a { color: rgba(255,255,255,0.8); text-decoration: none; }
-        .filter-tag a:hover { color: #fff; }
         .post-count { color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 1.5rem; }
 
         .post-list { display: flex; flex-direction: column; gap: 1rem; }
         .post-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; display: flex; justify-content: space-between; align-items: flex-start; transition: box-shadow 0.2s, transform 0.15s; }
         .post-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.07); transform: translateY(-1px); }
+
+        /* TYPE BADGE */
+        .type-badge { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.72rem; font-weight: 600; padding: 0.2rem 0.55rem; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.04em; }
+        .type-article { background: #EEF2FF; color: #4F46E5; }
+        .type-video { background: #FEF3C7; color: #D97706; }
+
         .post-meta { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
-        .post-author-link { font-size: 0.78rem; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.05em; text-decoration: none; background: var(--accent-light); padding: 0.2rem 0.55rem; border-radius: 20px; transition: background 0.15s; }
+        .post-author-link { font-size: 0.78rem; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.05em; text-decoration: none; background: var(--accent-light); padding: 0.2rem 0.55rem; border-radius: 20px; }
         .post-author-link:hover { background: #c8e6d8; }
         .post-author-you { font-size: 0.72rem; color: var(--text-secondary); background: #F0F0EE; padding: 0.2rem 0.5rem; border-radius: 20px; }
         .post-date { font-size: 0.78rem; color: var(--text-secondary); }
         .post-title { font-size: 1.05rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.4rem; line-height: 1.4; }
         .post-excerpt { font-size: 0.875rem; color: var(--text-secondary); line-height: 1.6; }
 
-        /* STATS dans la liste */
-        .post-stats { display: flex; align-items: center; gap: 1rem; margin-top: 0.6rem; }
+        /* TAGS */
+        .post-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.6rem; }
+        .post-tag { font-size: 0.75rem; color: var(--accent); background: var(--accent-light); padding: 0.15rem 0.5rem; border-radius: 20px; text-decoration: none; }
+        .post-tag:hover { background: #c8e6d8; }
+
+        /* STATS */
+        .post-stats { display: flex; align-items: center; gap: 0.8rem; margin-top: 0.65rem; flex-wrap: wrap; }
         .stat-item { display: flex; align-items: center; gap: 0.3rem; font-size: 0.78rem; color: var(--text-secondary); }
 
+        /* RÉACTIONS (emojis) */
+        .reactions-summary { display: flex; gap: 0.3rem; }
+        .reaction-emoji { font-size: 0.85rem; }
+
         .post-actions { display: flex; gap: 0.5rem; flex-shrink: 0; margin-left: 1.5rem; flex-direction: column; align-items: flex-end; }
-        .btn-action { font-size: 0.8rem; font-weight: 500; padding: 0.4rem 0.85rem; border-radius: 8px; text-decoration: none; border: 1.5px solid; transition: background 0.15s, color 0.15s; cursor: pointer; font-family: 'DM Sans', sans-serif; white-space: nowrap; }
-        .btn-view { color: var(--accent); border-color: var(--accent); background: transparent; }
+        .btn-action { font-size: 0.8rem; font-weight: 500; padding: 0.4rem 0.85rem; border-radius: 8px; text-decoration: none; border: 1.5px solid; transition: background 0.15s, color 0.15s; cursor: pointer; font-family: 'DM Sans', sans-serif; white-space: nowrap; background: transparent; }
+        .btn-view { color: var(--accent); border-color: var(--accent); }
         .btn-view:hover { background: var(--accent-light); }
-        .btn-edit { color: var(--text-secondary); border-color: var(--border); background: transparent; }
+        .btn-edit { color: var(--text-secondary); border-color: var(--border); }
         .btn-edit:hover { border-color: var(--text-secondary); color: var(--text-primary); }
-        .btn-delete { color: #C0392B; border-color: #FECACA; background: transparent; }
+        .btn-delete { color: #C0392B; border-color: #FECACA; }
         .btn-delete:hover { background: #FEF2F2; }
 
         .empty-state { text-align: center; padding: 4rem 2rem; color: var(--text-secondary); }
@@ -66,6 +82,13 @@
 <nav>
     <a class="nav-brand" th:href="@{/posts}">Demo3</a>
     <div class="nav-actions">
+        <!-- Avatar utilisateur -->
+        <img class="nav-avatar"
+             th:if="${currentUser.profile != null and currentUser.profile.avatar != null and !#strings.isEmpty(currentUser.profile.avatar)}"
+             th:src="${currentUser.profile.avatar}" alt="avatar"/>
+        <div class="nav-avatar-placeholder"
+             th:unless="${currentUser.profile != null and currentUser.profile.avatar != null and !#strings.isEmpty(currentUser.profile.avatar)}"
+             th:text="${#strings.substring(currentUser.username, 0, 1)}">U</div>
         <span class="nav-user">Connecté : <span th:text="${currentUser.username}">user</span></span>
         <a class="btn-new" th:href="@{/posts/new}">+ Nouveau post</a>
         <form th:action="@{/logout}" method="post" style="display:inline">
@@ -88,23 +111,52 @@
         <div class="post-card" th:each="post : ${posts}">
             <div style="flex:1; min-width:0;">
                 <div class="post-meta">
+                    <!-- TYPE BADGE -->
+                    <span class="type-badge type-video"
+                          th:if="${post.class.simpleName == 'VideoPost'}">🎬 Vidéo</span>
+                    <span class="type-badge type-article"
+                          th:unless="${post.class.simpleName == 'VideoPost'}">📝 Article</span>
+
                     <a class="post-author-link"
                        th:href="@{/posts(author=${post.author != null ? post.author.username : ''})}"
                        th:text="${post.author != null ? post.author.username : 'Anonyme'}">Auteur</a>
-                    <span class="post-author-you" th:if="${post.author != null and post.author.id == currentUser.id}">vous</span>
+                    <span class="post-author-you"
+                          th:if="${post.author != null and post.author.id == currentUser.id}">vous</span>
                     <span class="post-date" th:if="${post.createdAt != null}"
                           th:text="${#temporals.format(post.createdAt, 'dd MMM yyyy')}"></span>
                 </div>
+
                 <div class="post-title" th:text="${post.title}">Titre</div>
                 <div class="post-excerpt" th:text="${#strings.abbreviate(post.content, 120)}">Contenu…</div>
 
+                <!-- TAGS -->
+                <div class="post-tags" th:if="${not #sets.isEmpty(post.tags)}">
+                    <span class="post-tag" th:each="tag : ${post.tags}" th:text="'#' + ${tag.name}">tag</span>
+                </div>
+
                 <!-- STATS -->
                 <div class="post-stats">
-                    <div class="stat-item">👁️ <span th:text="${post.views}">0</span> vue(s)</div>
-                    <div class="stat-item">❤️ <span th:text="${post.likes}">0</span> like(s)</div>
-                    <div class="stat-item">💬 <span th:text="${#lists.size(post.comments)}">0</span> commentaire(s)</div>
+                    <div class="stat-item">👁️ <span th:text="${post.views}">0</span></div>
+                    <div class="stat-item">💬 <span th:text="${#lists.size(post.comments)}">0</span></div>
+                    <!-- Réactions -->
+                    <div class="stat-item reactions-summary" th:if="${not #lists.isEmpty(post.reactions)}">
+                       <span th:each="r : ${post.reactions}" class="reaction-emoji">
+
+    <span th:switch="${r.type.name()}">
+        <span th:case="'LIKE'">👍</span>
+        <span th:case="'LOVE'">❤️</span>
+        <span th:case="'HAHA'">😂</span>
+        <span th:case="'WOW'">😮</span>
+        <span th:case="'SAD'">😢</span>
+        <span th:case="*">😡</span>
+    </span>
+
+</span>
+                        <span th:text="${#lists.size(post.reactions)}">0</span>
+                    </div>
                 </div>
             </div>
+
             <div class="post-actions">
                 <a class="btn-action btn-view" th:href="@{/posts/{id}(id=${post.id})}">Voir</a>
                 <a class="btn-action btn-edit"
@@ -124,6 +176,15 @@
         <p th:if="${filterAuthor != null}">Cet utilisateur n'a pas encore publié. <a th:href="@{/posts}">Voir tous les posts</a></p>
         <p th:if="${filterAuthor == null}">Soyez le premier à publier !</p>
     </div>
+    <!-- Dans la boucle th:each="post : ${posts}" ou sur un objet ${post} -->
+    <div class="post-tags">
+    <span th:each="tag : ${post.tags}"
+          th:text="'#' + ${tag.name}"
+          class="badge bg-info text-dark me-1">
+          #Tag
+    </span>
+    </div>
+
 </div>
 </body>
 </html>

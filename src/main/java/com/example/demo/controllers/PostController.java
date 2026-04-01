@@ -1,6 +1,7 @@
 package com.example.demo.controllers;
 
 import com.example.demo.*;
+import com.example.demo.repositories.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -8,7 +9,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 @Controller
 public class PostController {
@@ -16,19 +19,25 @@ public class PostController {
     private final PostService postService;
     private final UserService userService;
     private final CommentService commentService;
+    private final ReactionService reactionService;
+    private final TagRepository tagRepository;
 
     @Autowired
-    public PostController(PostService postService, UserService userService, CommentService commentService) {
+    public PostController(PostService postService, UserService userService,
+                          CommentService commentService, ReactionService reactionService,
+                          TagRepository tagRepository ) {
         this.postService = postService;
         this.userService = userService;
         this.commentService = commentService;
+        this.reactionService = reactionService;
+        this.tagRepository = tagRepository;
     }
 
-    // ── POSTS ────────────────────────────────────────────────
+    // ── POSTS ─────────────────────────────────────────────────
 
     @GetMapping("/posts")
     public String listPosts(@RequestParam(required = false) String author, Model model, Principal principal) {
-        User currentUser = userService.findByUsername(principal.getName());
+        User currentUser = (principal != null) ? userService.findByUsername(principal.getName()) : null;
         if (author != null && !author.isBlank()) {
             User authorUser = userService.findByUsername(author);
             if (authorUser != null) {
@@ -47,18 +56,30 @@ public class PostController {
     @GetMapping("/posts/{id}")
     public String viewPost(@PathVariable Long id, Model model, Principal principal) {
         Post post = postService.getPostById(id);
-        User currentUser = userService.findByUsername(principal.getName());
+        User currentUser = (principal != null) ? userService.findByUsername(principal.getName()) : null;
 
-        postService.incrementViews(post, currentUser);
+        if (currentUser != null) {
+            postService.incrementViews(post, currentUser);
+        }
 
         Map<String, Object> likeStatus = postService.getLikeStatus(post, currentUser);
-
-        // MODIFIÉ : charge seulement les commentaires racines (les réponses sont chargées via .getReplies())
         model.addAttribute("post", post);
         model.addAttribute("comments", commentService.getRootCommentsByPost(post));
         model.addAttribute("currentUser", currentUser);
         model.addAttribute("likeStatus", likeStatus);
         return "view";
+    }
+
+    // AJOUT : Méthode pour voir le profil d'un utilisateur
+    @GetMapping("/profile/{id}")
+    public String showProfile(@PathVariable Long id, Model model, Principal principal) {
+        User user = userService.getUserById(id); // Assurez-vous que cette méthode existe dans UserService
+        User currentUser = (principal != null) ? userService.findByUsername(principal.getName()) : null;
+
+        model.addAttribute("user", user);
+        model.addAttribute("currentUser", currentUser);
+        model.addAttribute("posts", postService.getPostsByAuthor(user));
+        return "profile"; // Créez un fichier profile.html
     }
 
     @GetMapping("/posts/new")
@@ -68,9 +89,48 @@ public class PostController {
     }
 
     @PostMapping("/posts")
-    public String createPost(@ModelAttribute Post post, Principal principal) {
+    public String createPost(@RequestParam String title,
+                             @RequestParam String content,
+                             @RequestParam(defaultValue = "article") String postType,
+                             @RequestParam(required = false) String summary,
+                             @RequestParam(required = false) String url,
+                             @RequestParam(required = false) String tags,
+                             Principal principal) {
         User author = userService.findByUsername(principal.getName());
+
+        Post post;
+        if ("video".equals(postType)) {
+            VideoPost vp = new VideoPost();
+            vp.setUrl(url);
+            post = vp;
+        } else {
+            Article article = new Article();
+            article.setSummary(summary);
+            post = article;
+        }
+
+        post.setTitle(title);
+        post.setContent(content);
         post.setAuthor(author);
+
+        // Gestion des Tags : "spring,java" -> cherche ou crée
+        if (tags != null && !tags.isBlank()) {
+            Set<Tag> tagSet = new HashSet<>();
+            for (String tagName : tags.split(",")) {
+                String name = tagName.trim().toLowerCase();
+                if (!name.isEmpty()) {
+                    Tag tag = tagRepository.findByName(name)
+                            .orElseGet(() -> {
+                                Tag t = new Tag();
+                                t.setName(name);
+                                return tagRepository.save(t);
+                            });
+                    tagSet.add(tag);
+                }
+            }
+            post.setTags(tagSet);
+        }
+
         postService.createPost(post);
         return "redirect:/posts";
     }
@@ -97,31 +157,24 @@ public class PostController {
         return "redirect:/posts";
     }
 
-    // ── LIKES POSTS ──────────────────────────────────────────
+    // ── RÉACTIONS ─────────────────────────────────────────────
 
-    @PostMapping("/posts/{id}/like")
+    @PostMapping("/posts/{id}/react")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> likePost(@PathVariable Long id, Principal principal) {
+    public ResponseEntity<Map<String, Object>> react(@PathVariable Long id,
+                                                     @RequestBody Map<String, String> body,
+                                                     Principal principal) {
         Post post = postService.getPostById(id);
         User user = userService.findByUsername(principal.getName());
-        return ResponseEntity.ok(postService.toggleLike(post, user));
+        ReactionType type = ReactionType.valueOf(body.get("type"));
+        Map<String, Object> result = reactionService.toggleReaction(post, user, type);
+        return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/posts/{id}/dislike")
-    @ResponseBody
-    public ResponseEntity<Map<String, Object>> dislikePost(@PathVariable Long id, Principal principal) {
-        Post post = postService.getPostById(id);
-        User user = userService.findByUsername(principal.getName());
-        return ResponseEntity.ok(postService.toggleDislike(post, user));
-    }
+    // ── COMMENTAIRES ──────────────────────────────────────────
 
-    // ── COMMENTAIRES ─────────────────────────────────────────
-
-    // Ajouter un commentaire racine
     @PostMapping("/posts/{id}/comments")
-    public String addComment(@PathVariable Long id,
-                             @RequestParam("content") String content,
-                             Principal principal) {
+    public String addComment(@PathVariable Long id, @RequestParam("content") String content, Principal principal) {
         Post post = postService.getPostById(id);
         User author = userService.findByUsername(principal.getName());
         Comment comment = new Comment();
@@ -132,28 +185,23 @@ public class PostController {
         return "redirect:/posts/" + id;
     }
 
-    // AJOUTÉ : Répondre à un commentaire
     @PostMapping("/posts/{postId}/comments/{commentId}/reply")
-    public String replyToComment(@PathVariable Long postId,
-                                 @PathVariable Long commentId,
-                                 @RequestParam("content") String content,
-                                 Principal principal) {
+    public String replyToComment(@PathVariable Long postId, @PathVariable Long commentId,
+                                 @RequestParam("content") String content, Principal principal) {
         Post post = postService.getPostById(postId);
         User author = userService.findByUsername(principal.getName());
         commentService.addReply(commentId, content, post, author);
         return "redirect:/posts/" + postId;
     }
 
-    // Supprimer un commentaire
     @PostMapping("/posts/{postId}/comments/{commentId}/delete")
     public String deleteComment(@PathVariable Long postId, @PathVariable Long commentId) {
         commentService.deleteComment(commentId);
         return "redirect:/posts/" + postId;
     }
 
-    // ── LIKES COMMENTAIRES ───────────────────────────────────
+    // ── LIKES COMMENTAIRES ────────────────────────────────────
 
-    // AJOUTÉ : like commentaire
     @PostMapping("/comments/{commentId}/like")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> likeComment(@PathVariable Long commentId, Principal principal) {
@@ -161,7 +209,6 @@ public class PostController {
         return ResponseEntity.ok(commentService.toggleLike(commentId, user));
     }
 
-    // AJOUTÉ : dislike commentaire
     @PostMapping("/comments/{commentId}/dislike")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> dislikeComment(@PathVariable Long commentId, Principal principal) {
